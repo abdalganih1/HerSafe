@@ -58,7 +58,8 @@ object SmsHelper {
         longitude: Double,
         address: String? = null
     ): Map<String, Boolean> {
-        val locationUrl = "https://www.google.com/maps?q=$latitude,$longitude"
+        // Use ASCII comma (%2C) to prevent URL breaking
+        val locationUrl = "https://www.google.com/maps?q=$latitude%2C$longitude"
 
         val message = buildString {
             append("⚠️ تنبيه طوارئ من HerSafe!\n\n")
@@ -133,7 +134,7 @@ object SmsHelper {
         latitude: Double,
         longitude: Double
     ): Map<String, Boolean> {
-        val locationUrl = "https://www.google.com/maps?q=$latitude,$longitude"
+        val locationUrl = "https://www.google.com/maps?q=$latitude%2C$longitude"
 
         val message = buildString {
             append("⚠️ تنبيه انحراف عن المسار - HerSafe\n\n")
@@ -159,7 +160,7 @@ object SmsHelper {
         longitude: Double,
         stoppedDurationMinutes: Int
     ): Map<String, Boolean> {
-        val locationUrl = "https://www.google.com/maps?q=$latitude,$longitude"
+        val locationUrl = "https://www.google.com/maps?q=$latitude%2C$longitude"
 
         val message = buildString {
             append("⚠️ تنبيه توقف - HerSafe\n\n")
@@ -205,4 +206,56 @@ object SmsHelper {
         val messageCount: Int,
         val remainingCharacters: Int
     )
+
+    // Send location via WhatsApp
+    fun sendWhatsAppLocation(
+        context: android.content.Context,
+        phoneNumber: String,
+        latitude: Double,
+        longitude: Double,
+        message: String = "⚠️ تنبيه طوارئ - HerSafe"
+    ): Boolean {
+        return try {
+            val locationUrl = "https://www.google.com/maps?q=$latitude%2C$longitude"
+            val fullMessage = "$message\n\n$locationUrl"
+
+            // Format phone number for WhatsApp (remove spaces and special characters)
+            val cleanNumber = phoneNumber.replace(Regex("[\\s\\-()]"), "")
+
+            val intent = android.content.Intent(android.content.Intent.ACTION_VIEW)
+            intent.data = android.net.Uri.parse("https://wa.me/$cleanNumber?text=${android.net.Uri.encode(fullMessage)}")
+            intent.flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+            context.startActivity(intent)
+            true
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to send WhatsApp message", e)
+            false
+        }
+    }
+
+    // Send live location sharing via WhatsApp (opens WhatsApp with pre-filled message)
+    fun shareLiveLocationWhatsApp(
+        context: android.content.Context,
+        contacts: List<TrustedContact>,
+        latitude: Double,
+        longitude: Double
+    ) {
+        try {
+            val locationUrl = "https://www.google.com/maps?q=$latitude%2C$longitude"
+            val message = "⚠️ رحلة آمنة - HerSafe\n\nأنا في رحلة آمنة. تتبع موقعي:\n$locationUrl"
+
+            // Open WhatsApp with first contact
+            if (contacts.isNotEmpty()) {
+                val contact = contacts.first()
+                val cleanNumber = contact.phoneNumber.replace(Regex("[\\s\\-()]"), "")
+
+                val intent = android.content.Intent(android.content.Intent.ACTION_VIEW)
+                intent.data = android.net.Uri.parse("https://wa.me/$cleanNumber?text=${android.net.Uri.encode(message)}")
+                intent.flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+                context.startActivity(intent)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to share live location on WhatsApp", e)
+        }
+    }
 }

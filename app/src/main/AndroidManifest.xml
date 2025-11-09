@@ -67,6 +67,27 @@
             </intent-filter>
         </activity>
 
+        <!-- Other Activities -->
+        <activity
+            android:name=".ui.ContactsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.HistoryActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.SafeJourneyActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.SettingsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.SafeZonesActivity"
+            android:exported="false" />
+
         <!-- Services -->
         <service
             android:name=".services.MonitoringService"

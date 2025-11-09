@@ -2,7 +2,9 @@ package com.example.background_vol_up_down_app.services
 
 import android.app.Service
 import android.content.Intent
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.util.Log
 import androidx.core.app.ServiceCompat
 import com.example.background_vol_up_down_app.data.local.database.HerSafeDatabase
@@ -10,33 +12,38 @@ import com.example.background_vol_up_down_app.data.repository.*
 import com.example.background_vol_up_down_app.utils.EmergencyManager
 import com.example.background_vol_up_down_app.utils.NotificationHelper
 import com.example.background_vol_up_down_app.utils.PreferencesHelper
+import com.example.background_vol_up_down_app.utils.VolumeButtonDetector
 
 /**
  * MonitoringService
  *
- * Foreground service that runs in the background to monitor for emergency triggers.
- *
- * NOTE: Volume button detection is extremely difficult on Android without root access
- * or AccessibilityService. This service provides the infrastructure for emergency
- * monitoring, but the actual trigger mechanism needs to be:
- *
- * 1. AccessibilityService (complex, requires user to enable in settings)
- * 2. Hardware key override (not reliable across devices)
- * 3. In-app floating button (most reliable alternative)
- * 4. Widget button (good alternative)
- *
- * For MVP, we recommend using an in-app emergency button or widget.
+ * Foreground service that monitors volume button presses for emergency triggers:
+ * - 2 consecutive volume down presses within 1 second
+ * - 1 volume down press held for 3 seconds
  */
 class MonitoringService : Service() {
 
     private lateinit var emergencyManager: EmergencyManager
     private lateinit var preferencesHelper: PreferencesHelper
+    private lateinit var volumeDetector: VolumeButtonDetector
+    private val handler = Handler(Looper.getMainLooper())
+    private var isMonitoring = false
 
     companion object {
         private const val TAG = "MonitoringService"
         const val ACTION_START_MONITORING = "action_start_monitoring"
         const val ACTION_STOP_MONITORING = "action_stop_monitoring"
         const val ACTION_TRIGGER_EMERGENCY = "action_trigger_emergency"
+        private const val VOLUME_CHECK_INTERVAL_MS = 200L // Check every 200ms
+    }
+
+    private val volumeCheckRunnable = object : Runnable {
+        override fun run() {
+            if (isMonitoring) {
+                volumeDetector.checkVolumeChange()
+                handler.postDelayed(this, VOLUME_CHECK_INTERVAL_MS)
+            }
+        }
     }
 
     override fun onCreate() {
@@ -59,6 +66,12 @@ class MonitoringService : Service() {
         )
 
         preferencesHelper = PreferencesHelper(this)
+
+        // Initialize volume button detector
+        volumeDetector = VolumeButtonDetector(this) {
+            Log.i(TAG, "Volume button emergency trigger activated!")
+            handleEmergencyTrigger()
+        }
 
         // Create notification channels
         NotificationHelper.createNotificationChannels(this)
@@ -100,17 +113,23 @@ class MonitoringService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "Service destroyed")
+        isMonitoring = false
+        handler.removeCallbacks(volumeCheckRunnable)
+        volumeDetector.cleanup()
         preferencesHelper.isMonitoringEnabled = false
     }
 
     private fun startMonitoring() {
-        Log.d(TAG, "Monitoring started")
-        // TODO: Initialize volume button monitoring (complex)
-        // For now, service is just running in foreground
+        Log.d(TAG, "Monitoring started - Volume button detection active")
+        isMonitoring = true
+        handler.post(volumeCheckRunnable)
     }
 
     private fun stopMonitoring() {
         Log.d(TAG, "Monitoring stopped")
+        isMonitoring = false
+        handler.removeCallbacks(volumeCheckRunnable)
+        volumeDetector.cleanup()
         ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
         stopSelf()
     }

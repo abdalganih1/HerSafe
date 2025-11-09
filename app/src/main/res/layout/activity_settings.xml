@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- Toolbar -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        app:title="الإعدادات"
+        app:titleTextColor="@android:color/white"
+        app:navigationIcon="@drawable/ic_launcher_foreground" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Emergency Settings -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="إعدادات الطوارئ"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switchAutoRecord"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="تسجيل تلقائي عند الطوارئ"
+                android:layout_marginTop="12dp" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switchAutoVideo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="تسجيل فيديو تلقائي"
+                android:layout_marginTop="8dp" />
+
+            <!-- Journey Settings -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="إعدادات الرحلة الآمنة"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginTop="24dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="فترة التتبع (ثانية)"
+                android:layout_marginTop="12dp" />
+
+            <SeekBar
+                android:id="@+id/seekBarTrackingInterval"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="120"
+                android:min="15"
+                android:progress="30" />
+
+            <TextView
+                android:id="@+id/tvTrackingInterval"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="30 ثانية"
+                android:layout_marginTop="4dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="مدة التنبيه عند التوقف (دقيقة)"
+                android:layout_marginTop="16dp" />
+
+            <SeekBar
+                android:id="@+id/seekBarStoppedAlert"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="15"
+                android:min="1"
+                android:progress="5" />
+
+            <TextView
+                android:id="@+id/tvStoppedAlert"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5 دقائق"
+                android:layout_marginTop="4dp" />
+
+            <!-- Sync Settings -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="إعدادات المزامنة"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginTop="24dp" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switchAutoSync"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="مزامنة تلقائية مع السيرفر"
+                android:layout_marginTop="12dp" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switchWifiOnly"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="المزامنة عبر WiFi فقط"
+                android:layout_marginTop="8dp" />
+
+            <!-- About -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="حول التطبيق"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginTop="24dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="HerSafe v1.0.0\nتطبيق أمان للفتيات\n\nتم التطوير بواسطة Claude Code"
+                android:layout_marginTop="12dp" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

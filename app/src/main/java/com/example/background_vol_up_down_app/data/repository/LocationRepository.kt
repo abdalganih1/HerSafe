@@ -141,7 +141,8 @@ class LocationRepository(
 
     // Get Google Maps URL for location
     fun getGoogleMapsUrl(latitude: Double, longitude: Double): String {
-        return "https://www.google.com/maps?q=$latitude,$longitude"
+        // Use ASCII comma (%2C) to prevent URL breaking in SMS
+        return "https://www.google.com/maps?q=$latitude%2C$longitude"
     }
 
     // Get location string for SMS

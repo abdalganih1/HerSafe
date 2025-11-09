@@ -105,32 +105,27 @@ class MainActivity : AppCompatActivity() {
 
         // Safe Journey
         btnSafeJourney.setOnClickListener {
-            Toast.makeText(this, "ميزة الرحلة الآمنة - قريباً", Toast.LENGTH_SHORT).show()
-            // TODO: Start Safe Journey Activity
+            startActivity(Intent(this, com.example.background_vol_up_down_app.ui.SafeJourneyActivity::class.java))
         }
 
         // Contacts
         btnContacts.setOnClickListener {
-            Toast.makeText(this, "إدارة جهات الاتصال - قريباً", Toast.LENGTH_SHORT).show()
-            // TODO: Start Contacts Activity
+            startActivity(Intent(this, com.example.background_vol_up_down_app.ui.ContactsActivity::class.java))
         }
 
         // Safe Zones
         btnSafeZones.setOnClickListener {
-            Toast.makeText(this, "المناطق الآمنة - قريباً", Toast.LENGTH_SHORT).show()
-            // TODO: Start Safe Zones Activity
+            startActivity(Intent(this, com.example.background_vol_up_down_app.ui.SafeZonesActivity::class.java))
         }
 
         // History
         btnHistory.setOnClickListener {
-            Toast.makeText(this, "السجل - قريباً", Toast.LENGTH_SHORT).show()
-            // TODO: Start History Activity
+            startActivity(Intent(this, com.example.background_vol_up_down_app.ui.HistoryActivity::class.java))
         }
 
         // Settings
         btnSettings.setOnClickListener {
-            Toast.makeText(this, "الإعدادات - قريباً", Toast.LENGTH_SHORT).show()
-            // TODO: Start Settings Activity
+            startActivity(Intent(this, com.example.background_vol_up_down_app.ui.SettingsActivity::class.java))
         }
 
         // Request Permissions
